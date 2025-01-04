@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgresql_container
+    environment:
+      - POSTGRESQL_USERNAME=doguin
+      - POSTGRESQL_PASSWORD=senhadodoguin
+      - POSTGRESQL_DATABASE=doguin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+volumes:
+  postgresql_data:
+    driver: local
