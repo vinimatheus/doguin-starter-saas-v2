@@ -164,6 +164,9 @@ doguin-starter-saas-v2/
 
 ## Licença
 
+Créditos ao Projeto Base
+Este projeto foi inspirado e baseado no excelente trabalho de Kiranism com o projeto next-shadcn-dashboard-starter. Agradecemos por compartilhar um ponto de partida tão robusto e bem estruturado.
+
 Este projeto está licenciado sob a [Licença MIT](LICENSE).
 
 ---
