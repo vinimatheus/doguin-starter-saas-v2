@@ -38,7 +38,7 @@ export default function AppSidebar() {
             <Icons.Dog className="size-7" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">Dogin</span>
+            <span className="truncate font-semibold">Doguin</span>
             <span className="truncate text-xs">Saas Starter</span>
           </div>
         </div>

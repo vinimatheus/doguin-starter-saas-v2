@@ -1,8 +1,8 @@
-# 🐶 Dogin Starter SaaS v2
+# 🐶 Doguin Starter SaaS v2
 
 ## Visão Geral
 
-Dogin Starter SaaS v2 é um kit inicial moderno e robusto para SaaS, construído com:
+Doguin Starter SaaS v2 é um kit inicial moderno e robusto para SaaS, construído com:
 
 - **Next.js 15**: O mais recente framework para criação de aplicações React renderizadas no servidor.
 - **ShadCN**: Componentes de UI flexíveis para um desenvolvimento mais rápido.
@@ -38,10 +38,10 @@ Antes de começar, certifique-se de ter os seguintes itens instalados:
 
 ```bash
 # Clone o repositório para sua máquina local
-git clone https://github.com/vinimatheus/dogin-starter-saas-v2.git
+git clone https://github.com/vinimatheus/doguin-starter-saas-v2.git
 
 # Navegue até o diretório do projeto
-cd dogin-starter-saas-v2
+cd doguin-starter-saas-v2
 ```
 
 ### Passo 2: Configurar Variáveis de Ambiente
@@ -117,7 +117,7 @@ npm run dev
 ## Estrutura do Projeto
 
 ```
-dogin-starter-saas-v2/
+doguin-starter-saas-v2/
 ├── .github/             # Configurações e fluxos de trabalho do GitHub
 ├── .husky/              # Hooks do Git
 ├── .vscode/             # Configurações do Visual Studio Code

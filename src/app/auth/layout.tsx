@@ -6,7 +6,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex items-center gap-2 self-center font-medium justify-center">
             <Dog className="size-7" />
-          Dogin Inc.
+          Doguin Inc.
         </div>
         {children}
       </div>
