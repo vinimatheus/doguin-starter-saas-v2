@@ -3,7 +3,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
 
 // Configuração do Cloudinary
 
@@ -31,7 +30,6 @@ export const removeImage = async (imageUrl: string) => {
       data: { image: null }
     });
 
-    revalidatePath('/dashboard/configuracao/perfil');
     return { success: true };
   } catch (error) {
     throw new Error('Erro ao remover a imagem.');

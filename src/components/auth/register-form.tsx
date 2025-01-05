@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import * as z from "zod";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from 'zod';
+import { useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-import { RegisterSchema } from "@/schemas";
+import { RegisterSchema } from '@/schemas';
 
 import {
   Form,
@@ -15,37 +15,43 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FormError } from "@/components/auth/form-error";
-import { FormSucess } from "@/components/auth/form-sucess";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { FormError } from '@/components/auth/form-error';
+import { FormSucess } from '@/components/auth/form-sucess';
 
-import { register } from "@/actions/register";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import { register } from '@/actions/register';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import Link from 'next/link';
 
 export function RegisterForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+}: React.ComponentPropsWithoutRef<'div'>) {
+  const [error, setError] = useState<string | undefined>('');
+  const [success, setSuccess] = useState<string | undefined>('');
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+      name: '',
+      email: '',
+      password: ''
+    }
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
 
     startTransition(() => {
       register(values).then((data) => {
@@ -54,17 +60,17 @@ export function RegisterForm({
           setError(data.error); // Mantém a mesma lógica
         }
 
-        if (data?.sucess) { // Corrigido para 'sucess'
+        if (data?.success) {
+          // Corrigido para 'success'
           form.reset();
-          setSuccess(data.sucess); // Também corrigido
+          setSuccess(data.success); // Também corrigido
         }
       });
     });
-
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Crie sua conta</CardTitle>
@@ -171,15 +177,16 @@ export function RegisterForm({
             </form>
           </Form>
           <Link href="/auth/login">
-            <Button variant="link" size={"sm"} className="w-full">
+            <Button variant="link" size={'sm'} className="w-full">
               Já tem conta criada ? logue-se aqui
             </Button>
           </Link>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-        Ao clicar em continuar, você concorda com nossos <a href="#">Termos de Serviço</a>{" "}
-        e <a href="#">Política de Privacidade</a>.
+        Ao clicar em continuar, você concorda com nossos{' '}
+        <a href="#">Termos de Serviço</a> e{' '}
+        <a href="#">Política de Privacidade</a>.
       </div>
     </div>
   );

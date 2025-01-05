@@ -13,17 +13,14 @@ async function main() {
       name: 'Vinicius Matheus Moreira',
       email: 'vinicius@profood.com.br',
       password: hashedPassword,
-      role: 'ADMIN',
-    },
+      role: 'ADMIN'
+    }
   });
-
-  console.log('User created:', user);
 }
 
 main()
   .then(() => prisma.$disconnect())
   .catch((error) => {
-    console.error(error);
     prisma.$disconnect();
     process.exit(1);
   });

@@ -1,17 +1,27 @@
-import CardWrapper from "@/components/auth/card-wrapper";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription
+} from '@/components/ui/card';
 
 const ErrorCard = () => {
   return (
-    <CardWrapper
-      headerLabel="Oops! Something went wrong!"
-      backButtonHref="/auth/login"
-      backButtonLabel="Back to login"
-    >
-      <div className="w-full flex items-center justify-center">
-        <ExclamationTriangleIcon className="text-destructive" />
-      </div>
-    </CardWrapper>
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle className="text-xl">Resetar sua senha</CardTitle>
+        <CardDescription>
+          Digite uma nova senha para redefinir o acesso à sua conta
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex w-full items-center justify-center">
+          <ExclamationTriangleIcon className="text-destructive" />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

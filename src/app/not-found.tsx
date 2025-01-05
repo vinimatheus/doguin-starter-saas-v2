@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { Dog } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
@@ -16,8 +17,7 @@ export default function NotFound() {
         Algo está faltando
       </h2>
       <p>
-        Desculpe, a página que você está procurando não existe ou foi
-        movida.
+        Desculpe, a página que você está procurando não existe ou foi movida.
       </p>
       <div className="mt-8 flex justify-center gap-2">
         <Button onClick={() => router.back()} variant="default" size="lg">
@@ -30,6 +30,10 @@ export default function NotFound() {
         >
           Voltar para a Home
         </Button>
+      </div>
+      <div className="mt-4 flex items-center justify-center">
+        <Dog className="mr-2" />
+        <span className="text-xl font-bold">doguin</span>
       </div>
     </div>
   );

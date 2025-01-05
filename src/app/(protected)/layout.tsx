@@ -10,8 +10,8 @@ import { SessionProvider } from 'next-auth/react';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn Dashboard Starter',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: 'Dogin Starter v2',
+  description: 'Dashboard básico com Next.js e Shadcn para Dogin Starter v2'
 };
 
 export default async function DashboardLayout({
