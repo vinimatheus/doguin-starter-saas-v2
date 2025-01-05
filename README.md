@@ -77,7 +77,6 @@ cd doguin-starter-saas-v2
    - **DATABASE_URL**: String de conexão para seu banco de dados PostgreSQL.
    - **RESEND_API_KEY**: Chave de API para envio de emails.
    - **EMAIL_FROM**: Endereço de email do remetente padrão.
-   - **NEXT_PUBLIC_APP_URL**: URL pública do seu app.
    - **CLOUDINARY_URL**: API para upload da imagem do perfil do usuario.
 
 ### Passo 3: Configurar Docker
