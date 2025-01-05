@@ -1,40 +1,39 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import bcrypt from "bcryptjs";
+import * as z from 'zod';
 
-import { db } from "@/lib/db";
-import { SettingsSchema } from "@/schemas";
-import { getUserByEmail, getUserById } from "@/data/user";
-import { currentUser } from "@/lib/auth";
-import { generateVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
+import { db } from '@/lib/db';
+import { SettingsSchema } from '@/schemas';
+import { getUserByEmail, getUserById } from '@/data/user';
+import { currentUser } from '@/lib/auth';
+import { generateVerificationToken } from '@/lib/tokens';
+import { sendVerificationEmail } from '@/lib/mail';
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
 
   if (!user) {
-    return { error: "Unauthorized!" };
+    return { error: 'Não autorizado!' };
   }
 
   const dbUser = await getUserById(user.id as string);
 
   if (!dbUser) {
-    return { error: "Unauthorized!" };
+    return { error: 'Não autorizado!' };
   }
 
+  // Desativar campos para usuários OAuth
   if (user.isOAuth) {
     values.email = undefined;
-    values.password = undefined;
-    values.newPassword = undefined;
     values.isTwoFactorEnabled = undefined;
   }
 
+  // Alteração de email
   if (values.email && values.email !== user.email) {
     const existingUser = await getUserByEmail(values.email);
 
     if (existingUser && existingUser.id !== user.id) {
-      return { error: "Email already in use!" };
+      return { error: 'Email já está em uso!' };
     }
 
     const verificationToken = await generateVerificationToken(values.email);
@@ -43,31 +42,22 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
       verificationToken.token
     );
 
-    return { success: "Verification email sent!" };
+    return { success: 'Email de verificação enviado!' };
   }
 
-  if (values.password && values.newPassword && dbUser.password) {
-    const passwordsMatch = await bcrypt.compare(
-      values.password,
-      dbUser.password
-    );
-
-    if (!passwordsMatch) {
-      return { error: "Incorrect password!" };
-    }
-
-    const hashedPassword = await bcrypt.hash(values.newPassword, 10);
-
-    values.password = hashedPassword;
-    values.newPassword = undefined;
-  }
-
+  // Atualizar o usuário no banco de dados
   await db.user.update({
     where: { id: dbUser.id },
     data: {
-      ...values,
-    },
+      name: values.name || dbUser.name,
+      email: values.email || dbUser.email,
+      image: values.image || dbUser.image, // Suporte para imagem
+      isTwoFactorEnabled:
+        values.isTwoFactorEnabled !== undefined
+          ? values.isTwoFactorEnabled
+          : dbUser.isTwoFactorEnabled
+    }
   });
 
-  return { success: "Settings Updated!" };
+  return { success: 'Configurações atualizadas!' };
 };

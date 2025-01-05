@@ -4,6 +4,7 @@ import AppSidebar from '@/components/layout/app-sidebar';
 import Header from '@/components/layout/header';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { Toaster } from '@/components/ui/toaster';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { cookies } from 'next/headers';
@@ -25,20 +26,20 @@ export default async function DashboardLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <KBar>
-      <SidebarProvider defaultOpen={defaultOpen} >
-        <AppSidebar />
-        <SidebarInset>
-          <Header />
-          {/* page main content */}
-            {children}
-          {/* page main content ends */}
-        </SidebarInset>
-      </SidebarProvider>
-    </KBar>
-    </ThemeProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <KBar>
+          <SidebarProvider defaultOpen={defaultOpen}>
+            <AppSidebar />
+            <SidebarInset>
+              <Header />
+              <main>
+                {children}
+                <Toaster />
+              </main>
+            </SidebarInset>
+          </SidebarProvider>
+        </KBar>
+      </ThemeProvider>
     </SessionProvider>
   );
 }
