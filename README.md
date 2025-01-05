@@ -61,16 +61,16 @@ cd doguin-starter-saas-v2
    RESEND_API_KEY=sua_resend_api_key
    EMAIL_FROM=seu_email@exemplo.com
    NEXT_PUBLIC_APP_URL=http://localhost:3000
-   NEXTAUTH_SECRET=seu_nextauth_secret
+   CLOUDINARY_URL=sua_api_cloudinary
    ```
 
-   - **NEXTAUTH\_URL**: A URL base da sua aplicação.
-   - **AUTH\_SECRET**: Uma chave secreta para autenticação.
-   - **DATABASE\_URL**: String de conexão para seu banco de dados PostgreSQL.
-   - **RESEND\_API\_KEY**: Chave de API para envio de emails.
-   - **EMAIL\_FROM**: Endereço de email do remetente padrão.
-   - **NEXT\_PUBLIC\_APP\_URL**: URL pública do seu app.
-   - **NEXTAUTH\_SECRET**: Outra chave secreta para autenticação.
+   - **NEXTAUTH_URL**: A URL base da sua aplicação.
+   - **AUTH_SECRET**: Uma chave secreta para autenticação.
+   - **DATABASE_URL**: String de conexão para seu banco de dados PostgreSQL.
+   - **RESEND_API_KEY**: Chave de API para envio de emails.
+   - **EMAIL_FROM**: Endereço de email do remetente padrão.
+   - **NEXT_PUBLIC_APP_URL**: URL pública do seu app.
+   - **CLOUDINARY_URL**: API para upload da imagem do perfil do usuario.
 
 ### Passo 3: Configurar Docker
 
@@ -165,7 +165,7 @@ doguin-starter-saas-v2/
 ## Licença
 
 Créditos ao Projeto Base
-Este projeto foi inspirado e baseado no excelente trabalho de Kiranism com o projeto next-shadcn-dashboard-starter. Agradecemos por compartilhar um ponto de partida tão robusto e bem estruturado. 
+Este projeto foi inspirado e baseado no excelente trabalho de Kiranism com o projeto next-shadcn-dashboard-starter. Agradecemos por compartilhar um ponto de partida tão robusto e bem estruturado.
 https://github.com/Kiranism/next-shadcn-dashboard-starter
 
 Este projeto está licenciado sob a [Licença MIT](LICENSE).
