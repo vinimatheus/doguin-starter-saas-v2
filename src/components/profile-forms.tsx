@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react';
 import { useSession } from 'next-auth/react';
 import { useToast } from '@/hooks/use-toast';
-
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -119,11 +118,17 @@ const SettingsPage = () => {
           } else {
             toast({
               title: 'Sucesso',
-              description: `${field === 'name' ? 'Nome' : field === 'email' ? 'Email' : 'Imagem'} atualizado(a)!`,
+              description: `${
+                field === 'name'
+                  ? 'Nome'
+                  : field === 'email'
+                    ? 'Email'
+                    : 'Imagem'
+              } atualizado(a)!`,
               variant: 'default'
             });
 
-            // Atualize a sessão após qualquer atualização bem-sucedida
+            // Atualiza a sessão após qualquer atualização bem-sucedida
             if (field === 'name' || field === 'email' || field === 'image') {
               update();
             }
@@ -221,48 +226,93 @@ const SettingsPage = () => {
                   <FormItem>
                     <FormLabel>Foto de Perfil</FormLabel>
                     <FormControl>
-                      <div className="space-y-4">
-                        {/* Preview da Imagem */}
-                        {user?.image ? (
-                          <div className="relative flex justify-center">
-                            <Image
-                              src={user.image}
-                              alt="Profile Preview"
-                              className="h-32 w-32 rounded-full border"
-                              width={128}
-                              height={128}
-                            />
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="absolute right-0 top-0"
-                              onClick={handleRemove}
-                              disabled={isPending || uploading}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
+                      <Dialog>
+                        {/* Ao clicar na foto (ou no bloco), abre-se o Dialog */}
+                        <DialogTrigger asChild>
+                          <div className="relative h-32 w-32 cursor-pointer rounded-full border">
+                            {user?.image ? (
+                              <Image
+                                src={user.image}
+                                alt="Profile Preview"
+                                className="h-full w-full rounded-full object-cover"
+                                width={128}
+                                height={128}
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center rounded-full text-sm text-gray-500">
+                                Sem imagem
+                              </div>
+                            )}
+                            {/* Fundo preto com 60% de transparência no hover */}
+                            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity hover:opacity-100">
+                              <span className="text-white">Alterar</span>
+                            </div>
                           </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">
-                            Nenhuma imagem de perfil disponível.
-                          </p>
-                        )}
+                        </DialogTrigger>
 
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleUpload(file);
-                          }}
-                          disabled={uploading}
-                        />
-                      </div>
+                        {/* Restauração do DialogContent para seu estilo original */}
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              Gerenciar Imagem de Perfil
+                            </DialogTitle>
+                          </DialogHeader>
+
+                          <div className="flex flex-col items-center space-y-4">
+                            {user?.image ? (
+                              <Image
+                                src={user.image}
+                                alt="Profile Picture"
+                                className="h-48 w-48 rounded-full border object-cover"
+                                width={192}
+                                height={192}
+                              />
+                            ) : (
+                              <p className="text-sm text-gray-500">
+                                Nenhuma imagem de perfil disponível.
+                              </p>
+                            )}
+
+                            <div className="flex items-center space-x-2">
+                              {/* Se já tiver imagem, botão para remover */}
+                              {user?.image && (
+                                <Button
+                                  variant="destructive"
+                                  onClick={handleRemove}
+                                  disabled={isPending || uploading}
+                                >
+                                  Remover
+                                </Button>
+                              )}
+
+                              {/* Botão para alterar/atualizar a imagem */}
+                              <Button asChild disabled={uploading}>
+                                <label className="cursor-pointer">
+                                  Alterar
+                                  <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handleUpload(file);
+                                    }}
+                                  />
+                                </label>
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* ----------------------
+                  NOME
+              ----------------------- */}
               <FormField
                 control={form.control}
                 name="name"
@@ -300,6 +350,9 @@ const SettingsPage = () => {
                 )}
               />
 
+              {/* ----------------------
+                  EMAIL
+              ----------------------- */}
               <FormField
                 control={form.control}
                 name="email"
@@ -338,6 +391,9 @@ const SettingsPage = () => {
                 )}
               />
 
+              {/* ----------------------
+                  FUNÇÃO / ROLE
+              ----------------------- */}
               <FormField
                 control={form.control}
                 name="role"
@@ -393,6 +449,9 @@ const SettingsPage = () => {
                 )}
               />
 
+              {/* ----------------------
+                  2FA (Autenticação de dois fatores)
+              ----------------------- */}
               <FormField
                 control={form.control}
                 name="isTwoFactorEnabled"
@@ -452,6 +511,8 @@ const SettingsPage = () => {
             </div>
           </div>
         </Form>
+
+        {/* Botão para trocar senha */}
         <div className="mt-4">
           <Dialog>
             <DialogTrigger asChild>
