@@ -4,10 +4,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const emailFrom = process.env.EMAIL_FROM || 'default@example.com';
 const domain = process.env.NEXTAUTH_URL;
 
-/**
- * Template de e-mail elegante para o projeto Doguin.
- * Ajuste as cores, imagens e textos conforme a necessidade.
- */
 const emailTemplate = (
   title: string,
   description: string,
@@ -27,7 +23,6 @@ const emailTemplate = (
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     ">
-      <!-- Cabeçalho -->
       <tr>
         <td style="background-color: #1f2937; padding: 20px;">
           🐶
@@ -41,8 +36,6 @@ const emailTemplate = (
           </h1>
         </td>
       </tr>
-
-      <!-- Conteúdo -->
       <tr>
         <td style="padding: 30px 20px; text-align: left;">
           <p style="
@@ -79,8 +72,6 @@ const emailTemplate = (
           </p>
         </td>
       </tr>
-
-      <!-- Rodapé -->
       <tr>
         <td style="background-color: #f9fafb; padding: 15px; text-align: center;">
           <p style="
@@ -98,9 +89,6 @@ const emailTemplate = (
   </div>
 `;
 
-/**
- * Função para enviar e-mail de redefinição de senha.
- */
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${domain}/auth/new-password?token=${token}`;
   const html = emailTemplate(
@@ -118,9 +106,6 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   });
 };
 
-/**
- * Função para enviar e-mail de verificação de e-mail.
- */
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${domain}/auth/new-verification?token=${token}`;
   const html = emailTemplate(
@@ -138,12 +123,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   });
 };
 
-/**
- * Função para enviar token de autenticação de dois fatores.
- */
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
-  // Aqui podemos só exibir o token como texto, mas deixamos o botão
-  // apenas como um elemento de design (sem link real) para manter o layout.
   const html = emailTemplate(
     'Seu código de autenticação de dois fatores',
     `Use o código abaixo para completar sua autenticação no Doguin Starter SaaS v2.`,

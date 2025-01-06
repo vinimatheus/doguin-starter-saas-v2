@@ -200,13 +200,6 @@ const SettingsPage = () => {
           <Button variant="secondary" className="w-full justify-start">
             Perfil
           </Button>
-          <div>
-            <Link href="/dashboard/configuracao/usuarios">
-              <Button variant="ghost" className="w-full justify-start">
-                Usuários
-              </Button>
-            </Link>
-          </div>
         </nav>
       </div>
 
