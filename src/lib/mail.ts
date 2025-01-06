@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const emailFrom = process.env.EMAIL_FROM;
+const emailFrom = process.env.EMAIL_FROM || 'default@example.com';
 const domain = process.env.NEXTAUTH_URL;
 
 /**
