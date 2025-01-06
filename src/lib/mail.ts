@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const emailFrom = process.env.EMAIL_FROM;
 const domain = process.env.NEXTAUTH_URL;
 
 /**
@@ -114,7 +115,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   );
 
   await resend.emails.send({
-    from: 'support@doguin.com',
+    from: emailFrom,
     to: email,
     subject: 'Redefina sua senha - Doguin',
     html
@@ -134,7 +135,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   );
 
   await resend.emails.send({
-    from: 'support@doguin.com',
+    from: emailFrom,
     to: email,
     subject: 'Confirmação de E-mail - Doguin',
     html
@@ -155,7 +156,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   );
 
   await resend.emails.send({
-    from: 'support@doguin.com',
+    from: emailFrom,
     to: email,
     subject: 'Código de 2FA - Doguin',
     html
