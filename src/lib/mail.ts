@@ -30,11 +30,7 @@ const emailTemplate = (
       <!-- Cabeçalho -->
       <tr>
         <td style="background-color: #1f2937; padding: 20px;">
-          <img 
-            src="https://i.ibb.co/S6KwbnL/dogin-3.png" 
-            alt="Logo Doguin" 
-            style="height: 50px; display: block; margin: 0 auto 10px;"
-          />
+          🐶
           <h1 style="
             margin: 0;
             font-size: 24px;
