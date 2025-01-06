@@ -6,7 +6,6 @@ import { useToast } from '@/hooks/use-toast';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import {
   Dialog,
   DialogContent,
@@ -128,7 +127,6 @@ const SettingsPage = () => {
               variant: 'default'
             });
 
-            // Atualiza a sessão após qualquer atualização bem-sucedida
             if (field === 'name' || field === 'email' || field === 'image') {
               update();
             }
@@ -168,7 +166,7 @@ const SettingsPage = () => {
         description: 'Imagem atualizada com sucesso!',
         variant: 'default'
       });
-      update(); // Atualizar a sessão
+      update();
     }
 
     setUploading(false);
@@ -183,7 +181,7 @@ const SettingsPage = () => {
             description: 'Imagem removida com sucesso!',
             variant: 'default'
           });
-          update(); // Atualizar a sessão
+          update();
         })
         .catch(() =>
           toast({
@@ -197,7 +195,6 @@ const SettingsPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
       <div className="w-64 border-r p-6">
         <nav className="space-y-1">
           <Button variant="secondary" className="w-full justify-start">
@@ -213,7 +210,6 @@ const SettingsPage = () => {
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-6">
         <h1 className="mb-6 text-2xl font-semibold">Perfil</h1>
 
@@ -227,7 +223,6 @@ const SettingsPage = () => {
                     <FormLabel>Foto de Perfil</FormLabel>
                     <FormControl>
                       <Dialog>
-                        {/* Ao clicar na foto (ou no bloco), abre-se o Dialog */}
                         <DialogTrigger asChild>
                           <div className="relative h-32 w-32 cursor-pointer rounded-full border">
                             {user?.image ? (
@@ -243,14 +238,12 @@ const SettingsPage = () => {
                                 Sem imagem
                               </div>
                             )}
-                            {/* Fundo preto com 60% de transparência no hover */}
                             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity hover:opacity-100">
                               <span className="text-white">Alterar</span>
                             </div>
                           </div>
                         </DialogTrigger>
 
-                        {/* Restauração do DialogContent para seu estilo original */}
                         <DialogContent>
                           <DialogHeader>
                             <DialogTitle>
@@ -274,7 +267,6 @@ const SettingsPage = () => {
                             )}
 
                             <div className="flex items-center space-x-2">
-                              {/* Se já tiver imagem, botão para remover */}
                               {user?.image && (
                                 <Button
                                   variant="destructive"
@@ -285,7 +277,6 @@ const SettingsPage = () => {
                                 </Button>
                               )}
 
-                              {/* Botão para alterar/atualizar a imagem */}
                               <Button asChild disabled={uploading}>
                                 <label className="cursor-pointer">
                                   Alterar
@@ -310,9 +301,6 @@ const SettingsPage = () => {
                 )}
               />
 
-              {/* ----------------------
-                  NOME
-              ----------------------- */}
               <FormField
                 control={form.control}
                 name="name"
@@ -350,9 +338,6 @@ const SettingsPage = () => {
                 )}
               />
 
-              {/* ----------------------
-                  EMAIL
-              ----------------------- */}
               <FormField
                 control={form.control}
                 name="email"
@@ -391,9 +376,6 @@ const SettingsPage = () => {
                 )}
               />
 
-              {/* ----------------------
-                  FUNÇÃO / ROLE
-              ----------------------- */}
               <FormField
                 control={form.control}
                 name="role"
@@ -448,10 +430,6 @@ const SettingsPage = () => {
                   </FormItem>
                 )}
               />
-
-              {/* ----------------------
-                  2FA (Autenticação de dois fatores)
-              ----------------------- */}
               <FormField
                 control={form.control}
                 name="isTwoFactorEnabled"
@@ -512,7 +490,6 @@ const SettingsPage = () => {
           </div>
         </Form>
 
-        {/* Botão para trocar senha */}
         <div className="mt-4">
           <Dialog>
             <DialogTrigger asChild>
