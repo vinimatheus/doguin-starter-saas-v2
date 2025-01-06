@@ -1,82 +1,163 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
 const domain = process.env.NEXTAUTH_URL;
 
+/**
+ * Template de e-mail elegante para o projeto Doguin.
+ * Ajuste as cores, imagens e textos conforme a necessidade.
+ */
 const emailTemplate = (
   title: string,
   description: string,
   actionText: string,
   link: string
 ) => `
-  <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; text-align: center;">
-    <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-      <div style="background-color: #1a202c; color: #ffffff; padding: 20px;">
-        <h1 style="margin: 0; font-size: 24px;">${title}</h1>
-      </div>
-      <div style="padding: 20px; text-align: left;">
-        <p style="margin: 0 0 15px; font-size: 16px; color: #333333;">${description}</p>
-        <div style="text-align: center; margin: 20px 0;">
-          <a href="${link}" style="display: inline-block; background-color: #3182ce; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 16px;">
-            ${actionText}
-          </a>
-        </div>
-        <p style="margin: 0; font-size: 14px; color: #999999;">Se você não fez esta solicitação, ignore este e-mail.</p>
-      </div>
-      <div style="background-color: #f1f1f1; padding: 10px; font-size: 12px; color: #666666;">
-        <p style="margin: 0;">&copy; ${new Date().getFullYear()} Profood Embalagens. Todos os direitos reservados.</p>
-      </div>
-    </div>
+  <div style="
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f3f4f6;
+    padding: 30px 0;
+    text-align: center;
+  ">
+    <table border="0" cellspacing="0" cellpadding="0" align="center" style="
+      max-width: 600px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    ">
+      <!-- Cabeçalho -->
+      <tr>
+        <td style="background-color: #1f2937; padding: 20px;">
+          <img 
+            src="https://i.ibb.co/S6KwbnL/dogin-3.png" 
+            alt="Logo Doguin" 
+            style="height: 50px; display: block; margin: 0 auto 10px;"
+          />
+          <h1 style="
+            margin: 0;
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 600;
+          ">
+            ${title}
+          </h1>
+        </td>
+      </tr>
+
+      <!-- Conteúdo -->
+      <tr>
+        <td style="padding: 30px 20px; text-align: left;">
+          <p style="
+            margin: 0 0 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #4b5563;
+          ">
+            ${description}
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a 
+              href="${link}" 
+              style="
+                background: #4338ca;
+                color: #ffffff;
+                padding: 12px 24px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 16px;
+                font-weight: 600;
+                display: inline-block;
+              "
+            >
+              ${actionText}
+            </a>
+          </div>
+          <p style="
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 10px;
+          ">
+            Se você não fez esta solicitação, ignore este e-mail.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Rodapé -->
+      <tr>
+        <td style="background-color: #f9fafb; padding: 15px; text-align: center;">
+          <p style="
+            margin: 0;
+            font-size: 12px;
+            color: #6b7280;
+          ">
+            &copy; ${new Date().getFullYear()} 
+            <strong style="color: #4338ca;">Doguin Starter SaaS v2</strong>. 
+            Todos os direitos reservados.
+          </p>
+        </td>
+      </tr>
+    </table>
   </div>
 `;
 
+/**
+ * Função para enviar e-mail de redefinição de senha.
+ */
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${domain}/auth/new-password?token=${token}`;
   const html = emailTemplate(
     'Redefinir sua senha',
-    'Clique no botão abaixo para redefinir sua senha.',
+    'Clique no botão abaixo para redefinir sua senha no Doguin Starter SaaS v2.',
     'Redefinir Senha',
     resetLink
   );
 
   await resend.emails.send({
-    from: 'test@next.profood.com.br',
+    from: 'support@doguin.com',
     to: email,
-    subject: 'Redefina sua senha',
+    subject: 'Redefina sua senha - Doguin',
     html
   });
 };
 
+/**
+ * Função para enviar e-mail de verificação de e-mail.
+ */
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${domain}/auth/new-verification?token=${token}`;
   const html = emailTemplate(
     'Confirme seu e-mail',
-    'Clique no botão abaixo para confirmar seu endereço de e-mail.',
+    'Clique no botão abaixo para confirmar seu endereço de e-mail no Doguin Starter SaaS v2.',
     'Confirmar E-mail',
     confirmLink
   );
 
   await resend.emails.send({
-    from: 'test@next.profood.com.br',
+    from: 'support@doguin.com',
     to: email,
-    subject: 'Confirme seu e-mail',
+    subject: 'Confirmação de E-mail - Doguin',
     html
   });
 };
 
+/**
+ * Função para enviar token de autenticação de dois fatores.
+ */
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  // Aqui podemos só exibir o token como texto, mas deixamos o botão
+  // apenas como um elemento de design (sem link real) para manter o layout.
   const html = emailTemplate(
     'Seu código de autenticação de dois fatores',
-    `Use o código abaixo para completar sua autenticação.`,
-    'Código: ' + token,
+    `Use o código abaixo para completar sua autenticação no Doguin Starter SaaS v2.`,
+    `Código de 2FA: ${token}`,
     '#'
   );
 
   await resend.emails.send({
-    from: 'test@next.profood.com.br',
+    from: 'support@doguin.com',
     to: email,
-    subject: 'Código de 2FA',
+    subject: 'Código de 2FA - Doguin',
     html
   });
 };
