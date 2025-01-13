@@ -9,6 +9,7 @@ Doguin Starter SaaS v2 é um kit inicial moderno e robusto para SaaS, construíd
 - **Auth.js v5**: Uma biblioteca de autenticação simplificada.
 - **Prisma**: Um ORM moderno para gerenciamento de banco de dados.
 - **Docker**: Containerização para um deployment simplificado.
+- **Stripe**: Integração de pagamentos para gerenciar planos de assinatura.
 
 Este projeto foi projetado para ajudá-lo a iniciar e escalar rapidamente aplicações SaaS com uma arquitetura limpa e eficiente.
 
@@ -28,6 +29,7 @@ Este projeto foi projetado para ajudá-lo a iniciar e escalar rapidamente aplica
 - Autenticação pré-configurada (Google, Apple, etc.) usando Auth.js v5.
 - Estilizado com ShadCN e Tailwind CSS.
 - Integração de banco de dados com Prisma.
+- Integração com Stripe para gerenciamento de pagamentos e assinaturas.
 - Ambiente de desenvolvimento containerizado usando Docker.
 
 ---
@@ -70,6 +72,10 @@ cd doguin-starter-saas-v2
    EMAIL_FROM=seu_email@exemplo.com
    NEXT_PUBLIC_APP_URL=http://localhost:3000
    CLOUDINARY_URL=sua_api_cloudinary
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=sua_chave_publica_stripe
+   STRIPE_SECRET_KEY=sua_chave_secreta_stripe
+   NEXT_PUBLIC_PLAN_PRICE_ID_MONTHLY=id_preco_mensal_stripe
+   NEXT_PUBLIC_PLAN_PRICE_ID_YEARLY=id_preco_anual_stripe
    ```
 
    - **NEXTAUTH_URL**: A URL base da sua aplicação.
@@ -78,6 +84,10 @@ cd doguin-starter-saas-v2
    - **RESEND_API_KEY**: Chave de API para envio de emails.
    - **EMAIL_FROM**: Endereço de email do remetente padrão.
    - **CLOUDINARY_URL**: API para upload da imagem do perfil do usuario.
+   - **NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY**: Chave pública do Stripe.
+   - **STRIPE_SECRET_KEY**: Chave secreta do Stripe.
+   - **NEXT_PUBLIC_PLAN_PRICE_ID_MONTHLY**: ID do preço mensal configurado no Stripe.
+   - **NEXT_PUBLIC_PLAN_PRICE_ID_YEARLY**: ID do preço anual configurado no Stripe.
 
 ### Passo 3: Configurar Docker
 
@@ -107,17 +117,25 @@ npx prisma generate
 npx prisma migrate dev
 ```
 
-### Passo 5: Rodar o Servidor de Desenvolvimento
+### Passo 5: Configurar o Stripe
+
+1. Configure seus planos e preços no painel do Stripe.
+2. Atualize os IDs dos preços no arquivo `.env`:
+
+   ```env
+   NEXT_PUBLIC_PLAN_PRICE_ID_MONTHLY=price_12345
+   NEXT_PUBLIC_PLAN_PRICE_ID_YEARLY=price_67890
+   ```
+
+3. Adicione a lógica de assinatura no arquivo `src/app/(protected)/dashboard/configuracao/planos/_components/plan.tsx` para gerenciar planos de assinatura.
+
+### Passo 6: Rodar o Servidor de Desenvolvimento
 
 #### Sem Docker:
 
 ```bash
 npm run dev
 ```
-
-### Passo 6: Configurar Autenticação
-
-- Configure seus provedores de autenticação no arquivo `.env` (ex.: Google, Apple).
 
 ---
 

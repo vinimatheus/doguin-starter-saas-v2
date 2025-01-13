@@ -40,6 +40,6 @@ export const SettingsSchema = z.object({
   name: z.string().optional(),
   isTwoFactorEnabled: z.boolean().optional(),
   image: z.string().optional(),
-  role: UserRoleSchema,
+  role: UserRoleSchema.optional(),
   email: z.string().email().optional()
 });

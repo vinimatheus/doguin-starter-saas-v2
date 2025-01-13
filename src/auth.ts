@@ -7,6 +7,7 @@ import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation
 import { db } from '@/lib/db';
 import authConfig from '@/auth.config';
 import { getAccountByUserId } from './data/account';
+import Stripe from 'stripe';
 
 export const {
   handlers: { GET, POST },
@@ -30,6 +31,23 @@ export const {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== 'credentials') return true;
+
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+        apiVersion: '2024-12-18.acacia'
+      });
+
+      await stripe.customers
+        .create({
+          email: user.email!
+        })
+        .then(async (customer) => {
+          return db.user.update({
+            where: { id: user.id },
+            data: {
+              stripeCustomerId: customer.id
+            }
+          });
+        });
 
       if (!user.id) return false;
       const existingUser = await getUserById(user.id);

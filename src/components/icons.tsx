@@ -21,6 +21,7 @@ import {
   Moon,
   MoreVertical,
   Pizza,
+  Plane,
   Plus,
   Settings,
   SunMedium,
@@ -32,7 +33,7 @@ import {
   UserX2Icon,
   X
 } from 'lucide-react';
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle } from 'react-icons/fa';
 
 export type Icon = LucideIcon;
 
@@ -41,6 +42,7 @@ export const Icons = {
   logo: Command,
   login: LogIn,
   Dog,
+  Plane,
   close: X,
   product: LucideShoppingBag,
   spinner: Loader2,
