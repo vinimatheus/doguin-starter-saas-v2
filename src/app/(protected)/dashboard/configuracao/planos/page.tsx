@@ -38,7 +38,11 @@ export default async function Page() {
 
   const subscription = subscriptions.data[0];
   const plan = subscription.items.data[0]?.price;
-  const product = subscription.items.data[0]?.price.product;
+  const productId = plan?.product;
+
+  const product = await stripe.products.retrieve(productId as string);
+
+  const productName = product.name;
 
   // Obtém o histórico de pagamentos
   const invoices = await stripe.invoices.list({
@@ -59,11 +63,7 @@ export default async function Page() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="font-semibold">Produto:</p>
-              <p>
-                {typeof product !== 'string' && 'name' in product
-                  ? product.name
-                  : 'Produto não identificado'}
-              </p>
+              <p>{productName || 'Produto não identificado'}</p>
             </div>
             <div>
               <p className="font-semibold">Plano:</p>
