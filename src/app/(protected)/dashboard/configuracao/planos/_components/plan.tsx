@@ -58,20 +58,15 @@ export default function PlanPro() {
 
   return (
     <PageContainer>
-      <div className="mx-auto mt-12 max-w-md rounded-lg bg-white p-6">
-        <h2 className="text-center text-3xl font-bold text-gray-900">
-          Assine o Plano Pro
-        </h2>
+      <div className="mx-auto mt-12 max-w-md rounded-lg p-6">
+        <h2 className="text-center text-3xl font-bold">Assine o Plano Pro</h2>
         <>
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="mt-4 text-center text-sm">
             Escolha a melhor opção para você: mensal ou anual!
           </p>
 
           <div className="mt-6 flex items-center justify-center space-x-4">
-            <Label
-              htmlFor="billing-cycle"
-              className="text-sm font-medium text-gray-600"
-            >
+            <Label htmlFor="billing-cycle" className="text-sm font-medium">
               Mensal
             </Label>
             <Switch
@@ -79,26 +74,19 @@ export default function PlanPro() {
               checked={isAnnual}
               onCheckedChange={setIsAnnual}
             />
-            <Label
-              htmlFor="billing-cycle"
-              className="text-sm font-medium text-gray-600"
-            >
+            <Label htmlFor="billing-cycle" className="text-sm font-medium">
               Anual
             </Label>
           </div>
 
-          <Card className="mt-8 rounded-lg border border-gray-200 transition-shadow hover:shadow-xl">
+          <Card className="mt-8 rounded-lg border transition-shadow hover:shadow-xl">
             <CardHeader className="p-6 text-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {PLAN.name}
-              </h3>
+              <h3 className="text-lg font-semibold">{PLAN.name}</h3>
             </CardHeader>
             <CardContent className="p-6 text-center">
-              <p className="text-sm leading-relaxed text-gray-500">
-                {PLAN.description}
-              </p>
+              <p className="text-sm leading-relaxed">{PLAN.description}</p>
               <div className="mt-6">
-                <h4 className="text-2xl font-bold text-gray-800">
+                <h4 className="text-2xl font-bold">
                   {isAnnual
                     ? `R$ ${PLAN.priceYearly.toFixed(2)}/ano`
                     : `R$ ${PLAN.priceMonthly.toFixed(2)}/mês`}
