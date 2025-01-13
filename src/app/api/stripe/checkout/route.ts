@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const user = await currentUser();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const appUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
     const email = user?.email;
     const userId = user?.id;
