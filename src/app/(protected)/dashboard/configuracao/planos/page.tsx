@@ -12,6 +12,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { AlertCircle, CheckCircle, Info, RefreshCcw } from 'lucide-react';
 import Subscription from './_components/subscription';
 
 export default async function Page() {
@@ -30,103 +31,121 @@ export default async function Page() {
 
   const subscriptions = await stripe.subscriptions.list({
     customer: customer.id,
-    status: 'active'
+    status: 'all'
   });
 
-  if (!subscriptions.data.length) {
-    return <PlanPro />;
-  }
-
-  const subscription = subscriptions.data[0];
-  const plan = subscription.items.data[0]?.price;
-  const productId = plan?.product;
-
-  const product = await stripe.products.retrieve(productId as string);
-
-  const productName = product.name;
+  const activeSubscription = subscriptions.data.find(
+    (sub) => sub.status === 'active'
+  );
+  const canceledSubscriptions = subscriptions.data.filter(
+    (sub) => sub.status === 'canceled'
+  );
 
   const invoices = await stripe.invoices.list({
     customer: customer.id
   });
 
-  console.log({ user, customer, subscriptions, plan });
+  const activePlan = activeSubscription?.items.data[0]?.price;
+  const product = activePlan
+    ? await stripe.products.retrieve(activePlan.product as string)
+    : null;
 
   return (
-    <div className="mx-auto mt-10 max-w-4xl space-y-8">
+    <div className="mx-auto mt-10 max-w-4xl space-y-8 p-4">
       <div className="flex w-full justify-start">
         <Subscription />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-bold">
-            Detalhes da Assinatura
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="font-semibold">Produto:</p>
-              <p>{productName || 'Produto não identificado'}</p>
+      {activePlan ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-lg font-bold">
+              <Info className="mr-2" /> Detalhes da Assinatura
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="font-semibold">Produto:</p>
+                <p>{product?.name || 'Produto não identificado'}</p>
+              </div>
+              <div>
+                <p className="font-semibold">Preço:</p>
+                <p>
+                  {activePlan.unit_amount
+                    ? `R$ ${(activePlan.unit_amount / 100).toFixed(2)} por ${
+                        activePlan.recurring?.interval === 'month'
+                          ? 'mês'
+                          : 'ano'
+                      }`
+                    : 'Preço não disponível'}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">Data de Início:</p>
+                <p>
+                  {new Date(
+                    activeSubscription.start_date * 1000
+                  ).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">Próximo pagamento:</p>
+                <p>
+                  {new Date(
+                    activeSubscription.current_period_end * 1000
+                  ).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">Status do Plano:</p>
+                <p>
+                  {activeSubscription.cancel_at_period_end
+                    ? `Cancelado, válido até ${new Date(
+                        activeSubscription.current_period_end * 1000
+                      ).toLocaleDateString('pt-BR')}`
+                    : 'Ativo'}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">Renovação Automática:</p>
+                <p>{activeSubscription.cancel_at_period_end ? 'Não' : 'Sim'}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold">Plano:</p>
-              <p>{plan?.nickname || 'Plano não identificado'}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Preço:</p>
-              <p>
-                {plan?.unit_amount
-                  ? `R$ ${(plan.unit_amount / 100).toFixed(2)} por ${
-                      plan?.recurring?.interval === 'month' ? 'mês' : 'ano'
-                    }`
-                  : 'Preço não disponível'}
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">Moeda:</p>
-              <p>{plan?.currency.toUpperCase() || 'Moeda não disponível'}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Data de Início:</p>
-              <p>
-                {new Date(subscription.start_date * 1000).toLocaleDateString(
-                  'pt-BR'
-                )}
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">Próximo pagamento:</p>
-              <p>
-                {new Date(
-                  subscription.current_period_end * 1000
-                ).toLocaleDateString('pt-BR')}
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">Quantidade de itens:</p>
-              <p>{subscription.items.data[0]?.quantity || 1}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Método de Pagamento:</p>
-              <p>
-                {customer.invoice_settings.default_payment_method
-                  ? 'Cartão de Crédito'
-                  : 'Método de pagamento não disponível'}
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">ID da Assinatura:</p>
-              <p>{subscription.id}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      ) : (
+        <PlanPro />
+      )}
+
+      {canceledSubscriptions.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-lg font-bold">
+              <AlertCircle className="mr-2" /> Histórico de Cancelamentos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-disc pl-5">
+              {canceledSubscriptions.map((sub) => (
+                <li key={sub.id} className="mb-2">
+                  Plano {sub.items.data[0]?.price.nickname || 'desconhecido'} -
+                  Cancelado em{' '}
+                  {sub.ended_at
+                    ? new Date(sub.ended_at * 1000).toLocaleDateString('pt-BR')
+                    : 'Data não disponível'}
+                  .
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-bold">
-            Histórico de Pagamentos
+          <CardTitle className="flex items-center text-lg font-bold">
+            <RefreshCcw className="mr-2" /> Histórico de Pagamentos
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -159,7 +178,7 @@ export default async function Page() {
                           variant="default"
                           className="bg-green-500 text-white"
                         >
-                          Pago
+                          <CheckCircle className="mr-1" size={16} /> Pago
                         </Badge>
                       )}
                       {invoice.status === 'open' && (
