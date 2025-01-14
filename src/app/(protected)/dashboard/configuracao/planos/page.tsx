@@ -12,6 +12,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import Subscription from './_components/subscription';
 
 export default async function Page() {
   const user = await currentUser();
@@ -44,15 +45,18 @@ export default async function Page() {
 
   const productName = product.name;
 
-  // Obtém o histórico de pagamentos
   const invoices = await stripe.invoices.list({
-    customer: customer.id,
-    limit: 5 // Limita ao histórico mais recente
+    customer: customer.id
   });
+
+  console.log({ user, customer, subscriptions, plan });
 
   return (
     <div className="mx-auto mt-10 max-w-4xl space-y-8">
-      {/* Detalhes da Assinatura */}
+      <div className="flex w-full justify-start">
+        <Subscription />
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-bold">
@@ -119,7 +123,6 @@ export default async function Page() {
         </CardContent>
       </Card>
 
-      {/* Histórico de Pagamentos */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-bold">
