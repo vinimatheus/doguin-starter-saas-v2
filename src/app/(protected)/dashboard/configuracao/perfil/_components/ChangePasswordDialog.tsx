@@ -13,12 +13,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { changePassword } from '@/actions/resetpassword';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 const ChangePasswordDialog = () => {
   const { toast } = useToast();
   const [isPending, setIsPending] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+
+  const user = useCurrentUser();
+
+  const isOAuthUser = user?.isOAuth || false;
 
   const handleChangePassword = () => {
     setIsPending(true);
@@ -51,57 +56,61 @@ const ChangePasswordDialog = () => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Trocar Senha</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Trocar Senha</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium">Senha Atual</label>
-            <Input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Digite sua senha atual"
-              disabled={isPending}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Nova Senha</label>
-            <Input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Digite sua nova senha"
-              disabled={isPending}
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setCurrentPassword('');
-              setNewPassword('');
-            }}
-            disabled={isPending}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={handleChangePassword}
-            disabled={isPending || !currentPassword || !newPassword}
-          >
-            Alterar Senha
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <>
+      {!isOAuthUser && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">Trocar Senha</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Trocar Senha</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium">Senha Atual</label>
+                <Input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Digite sua senha atual"
+                  disabled={isPending}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Nova Senha</label>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Digite sua nova senha"
+                  disabled={isPending}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setCurrentPassword('');
+                  setNewPassword('');
+                }}
+                disabled={isPending}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleChangePassword}
+                disabled={isPending || !currentPassword || !newPassword}
+              >
+                Alterar Senha
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 };
 

@@ -17,14 +17,9 @@ model User {
   name                    String?
   email                   String?                @unique
   emailVerified           DateTime?
+  stripeCustomerId        String?
   image                   String?
   password                String?
-  stripeCustomerId        String?
-  stripeSubscriptionId    String?
-  stripeProductId         String?
-  planName                String?
-  subscriptionStatus      String?
-  subscriptionExpiresAt   DateTime?
   role                    UserRole               @default(USER)
   accounts                Account[]
   isTwoFactorEnabled      Boolean                @default(false)
@@ -32,6 +27,28 @@ model User {
   twoFactorConfirmationId String?                @unique
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
+  VerificationCode        VerificationCode[]
+}
+
+model VerificationCode {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId, email]) // Opcional para consultas rápidas
+}
+
+model UserInvitation {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      UserRole @default(USER) // Enum para definir a função do usuário convidado
+  token     String   @unique // Token único para verificar o convite
+  expiresAt DateTime // Expiração do convite
+  createdAt DateTime @default(now())
 }
 
 model Account {

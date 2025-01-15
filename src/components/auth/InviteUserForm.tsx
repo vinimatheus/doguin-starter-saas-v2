@@ -7,8 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { cn } from '@/lib/utils';
 
-import { RegisterSchema } from '@/schemas';
-
 import {
   Form,
   FormControl,
@@ -21,8 +19,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/form-error';
 import { FormSucess } from '@/components/auth/form-sucess';
-
-import { register } from '@/actions/register';
 import {
   Card,
   CardContent,
@@ -30,10 +26,18 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import Link from 'next/link';
-import Social from './social';
 
-export function RegisterForm({
+import { inviteUser } from '@/actions/invite-user';
+
+const InviteSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório.'),
+  email: z.string().email('Email inválido.'),
+  role: z.enum(['USER', 'ADMIN'])
+});
+
+type InviteFormValues = z.infer<typeof InviteSchema>;
+
+export default function InviteUserForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
@@ -41,30 +45,29 @@ export function RegisterForm({
   const [success, setSuccess] = useState<string | undefined>('');
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<InviteFormValues>({
+    resolver: zodResolver(InviteSchema),
     defaultValues: {
       name: '',
       email: '',
-      password: ''
+      role: 'USER'
     }
   });
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = (values: InviteFormValues) => {
     setError('');
     setSuccess('');
 
     startTransition(() => {
-      register(values).then((data) => {
+      inviteUser(values).then((data) => {
         if (data?.error) {
           form.reset();
-          setError(data.error); // Mantém a mesma lógica
+          setError(data.error);
         }
 
         if (data?.success) {
-          // Corrigido para 'success'
           form.reset();
-          setSuccess(data.success); // Também corrigido
+          setSuccess(data.success);
         }
       });
     });
@@ -74,24 +77,15 @@ export function RegisterForm({
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Crie sua conta</CardTitle>
+          <CardTitle className="text-xl">Convidar Usuário</CardTitle>
           <CardDescription>
-            Registre-se com sua conta Apple ou Google
+            Preencha os dados do usuário para enviar o convite.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-10 flex flex-col gap-4">
-            <Social />
-          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid gap-6">
-                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                  <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                    Ou continue com
-                  </span>
-                </div>
-
                 {/* Nome */}
                 <FormField
                   control={form.control}
@@ -131,20 +125,22 @@ export function RegisterForm({
                   )}
                 />
 
-                {/* Senha */}
+                {/* Função */}
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Senha</FormLabel>
+                      <FormLabel>Função</FormLabel>
                       <FormControl>
-                        <Input
+                        <select
                           {...field}
                           disabled={isPending}
-                          placeholder="******"
-                          type="password"
-                        />
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                        >
+                          <option value="USER">Usuário</option>
+                          <option value="ADMIN">Administrador</option>
+                        </select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,25 +151,13 @@ export function RegisterForm({
               <FormSucess message={success} />
               <div className="mt-4">
                 <Button disabled={isPending} type="submit" className="w-full">
-                  Criar conta
+                  {isPending ? 'Enviando convite...' : 'Enviar Convite'}
                 </Button>
               </div>
             </form>
           </Form>
-          <Link href="/auth/login">
-            <Button variant="link" size={'sm'} className="w-full">
-              Já tem conta criada ? logue-se aqui
-            </Button>
-          </Link>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-        Ao clicar em continuar, você concorda com nossos{' '}
-        <a href="#">Termos de Serviço</a> e{' '}
-        <a href="#">Política de Privacidade</a>.
-      </div>
     </div>
   );
 }
-
-export default RegisterForm;

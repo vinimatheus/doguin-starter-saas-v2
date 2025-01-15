@@ -52,16 +52,15 @@ export default async function Page() {
 
   return (
     <div className="mx-auto mt-10 max-w-4xl space-y-8 p-4">
-      <div className="flex w-full justify-start">
-        <Subscription />
-      </div>
-
       {activePlan ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center text-lg font-bold">
               <Info className="mr-2" /> Detalhes da Assinatura
             </CardTitle>
+            <div className="flex w-full justify-start">
+              <Subscription />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
@@ -90,13 +89,18 @@ export default async function Page() {
                 </p>
               </div>
               <div>
-                <p className="font-semibold">Próximo pagamento:</p>
+                <p className="font-semibold">
+                  {activeSubscription.cancel_at_period_end
+                    ? 'Vencimento da Licença:'
+                    : 'Próximo pagamento:'}
+                </p>
                 <p>
                   {new Date(
                     activeSubscription.current_period_end * 1000
                   ).toLocaleDateString('pt-BR')}
                 </p>
               </div>
+
               <div>
                 <p className="font-semibold">Status do Plano:</p>
                 <p>
@@ -142,25 +146,25 @@ export default async function Page() {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center text-lg font-bold">
-            <RefreshCcw className="mr-2" /> Histórico de Pagamentos
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Valor</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Recibo</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.data.length > 0 ? (
-                invoices.data.map((invoice) => (
+      {invoices.data.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center text-lg font-bold">
+              <RefreshCcw className="mr-2" /> Histórico de Pagamentos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Recibo</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.data.map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell>
                       {new Date(invoice.created * 1000).toLocaleDateString(
@@ -198,7 +202,6 @@ export default async function Page() {
                         </Badge>
                       )}
                     </TableCell>
-
                     <TableCell>
                       {invoice.invoice_pdf ? (
                         <a
@@ -214,18 +217,12 @@ export default async function Page() {
                       )}
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    Nenhum pagamento encontrado.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

@@ -36,6 +36,12 @@ export const NewPasswordSchema = z.object({
   })
 });
 
+export const InviteSchema = z.object({
+  email: z.string().email('Email inválido!'),
+  role: z.enum(['ADMIN', 'USER']).optional(),
+  name: z.string().min(1, 'Nome é obrigatório!')
+});
+
 export const SettingsSchema = z.object({
   name: z.string().optional(),
   isTwoFactorEnabled: z.boolean().optional(),
