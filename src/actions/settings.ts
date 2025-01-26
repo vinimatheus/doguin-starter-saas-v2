@@ -22,13 +22,11 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     return { error: 'Não autorizado!' };
   }
 
-  // Desativar campos para usuários OAuth
   if (user.isOAuth) {
     values.email = undefined;
     values.isTwoFactorEnabled = undefined;
   }
 
-  // Alteração de email
   if (values.email && values.email !== user.email) {
     const existingUser = await getUserByEmail(values.email);
 
@@ -45,13 +43,12 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     return { success: 'Email de verificação enviado!' };
   }
 
-  // Atualizar o usuário no banco de dados
   await db.user.update({
     where: { id: dbUser.id },
     data: {
       name: values.name || dbUser.name,
       email: values.email || dbUser.email,
-      image: values.image || dbUser.image, // Suporte para imagem
+      image: values.image || dbUser.image,
       isTwoFactorEnabled:
         values.isTwoFactorEnabled !== undefined
           ? values.isTwoFactorEnabled

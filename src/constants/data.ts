@@ -7,7 +7,7 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    items: []
   },
   {
     title: 'Configuração',
@@ -22,7 +22,7 @@ export const navItems: NavItem[] = [
         icon: 'user',
         isActive: false,
         shortcut: ['p', 'p'],
-        items: [] // Empty array as there are no child items for Perfil
+        items: []
       }
     ]
   }

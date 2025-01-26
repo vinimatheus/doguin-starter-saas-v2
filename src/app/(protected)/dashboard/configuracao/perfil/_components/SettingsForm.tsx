@@ -79,7 +79,7 @@ const SettingsForm = () => {
             description: 'Código de verificação enviado ao novo e-mail.',
             variant: 'default'
           });
-          setUpdatedEmail(value ?? ''); // Garante que não seja `undefined`
+          setUpdatedEmail(value ?? '');
           setShowOTP(true);
         }
       } else {

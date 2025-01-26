@@ -1,21 +1,21 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import { AuthError } from "next-auth";
-import bcrypt from "bcryptjs";
+import * as z from 'zod';
+import { AuthError } from 'next-auth';
+import bcrypt from 'bcryptjs';
 
-import { signIn } from "@/auth";
-import { LoginSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
-import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail";
+import { signIn } from '@/auth';
+import { LoginSchema } from '@/schemas';
+import { getUserByEmail } from '@/data/user';
+import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
+import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/lib/mail';
 import {
   generateVerificationToken,
-  generateTwoFactorToken,
-} from "@/lib/tokens";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { db } from "@/lib/db";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+  generateTwoFactorToken
+} from '@/lib/tokens';
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
+import { db } from '@/lib/db';
+import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -24,7 +24,7 @@ export const login = async (
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: "Campos inválidos!" };
+    return { error: 'Campos inválidos!' };
   }
 
   const { email, password, code } = validatedFields.data;
@@ -32,7 +32,7 @@ export const login = async (
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email não existe!" };
+    return { error: 'Email não existe!' };
   }
 
   if (!existingUser.emailVerified) {
@@ -45,13 +45,13 @@ export const login = async (
       verificationToken.token
     );
 
-    return { success: "Email de confirmação enviado!" };
+    return { success: 'Email de confirmação enviado!' };
   }
 
   const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
   if (!passwordMatch) {
-    return { error: "Credenciais inválidas!" };
+    return { error: 'Credenciais inválidas!' };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -59,21 +59,21 @@ export const login = async (
       const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
 
       if (!twoFactorToken) {
-        return { error: "Código inválido!" };
+        return { error: 'Código inválido!' };
       }
 
       if (twoFactorToken.token !== code) {
-        return { error: "Código inválido!" };
+        return { error: 'Código inválido!' };
       }
 
       const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
       if (hasExpired) {
-        return { error: "Código expirado!" };
+        return { error: 'Código expirado!' };
       }
 
       await db.twoFactorToken.delete({
-        where: { id: twoFactorToken.id },
+        where: { id: twoFactorToken.id }
       });
 
       const existingConfirmation = await getTwoFactorConfirmationByUserId(
@@ -82,14 +82,14 @@ export const login = async (
 
       if (existingConfirmation) {
         await db.twoFactorConfirmation.delete({
-          where: { id: existingConfirmation.id },
+          where: { id: existingConfirmation.id }
         });
       }
 
       await db.twoFactorConfirmation.create({
         data: {
-          userId: existingUser.id,
-        },
+          userId: existingUser.id
+        }
       });
     } else {
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
@@ -100,20 +100,18 @@ export const login = async (
   }
 
   try {
-    await signIn("credentials", {
+    await signIn('credentials', {
       email,
       password,
-      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT
     });
-
-    // return { success: "Login realizado com sucesso!" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Credenciais inválidas!" };
+        case 'CredentialsSignin':
+          return { error: 'Credenciais inválidas!' };
         default:
-          return { error: "Algo deu errado!" };
+          return { error: 'Algo deu errado!' };
       }
     }
 

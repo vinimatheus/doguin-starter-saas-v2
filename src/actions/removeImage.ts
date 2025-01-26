@@ -4,8 +4,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 
-// Configuração do Cloudinary
-
 export const removeImage = async (imageUrl: string) => {
   const user = await currentUser();
 
@@ -14,17 +12,14 @@ export const removeImage = async (imageUrl: string) => {
   }
 
   try {
-    // Extrair o public_id da URL
     const publicId = imageUrl.split('/').pop()?.split('.')[0];
 
     if (!publicId) {
       throw new Error('ID da imagem inválido.');
     }
 
-    // Remover do Cloudinary
     await cloudinary.uploader.destroy(`user_profiles/${publicId}`);
 
-    // Atualizar o banco de dados
     await db.user.update({
       where: { id: user.id },
       data: { image: null }

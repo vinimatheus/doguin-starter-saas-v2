@@ -1,13 +1,9 @@
-// pages/(protected)/dashboard/configuracao/usuarios/page.tsx
-
 import { DataTable } from '@/components/DataTable/DataTable';
 import { db } from '@/lib/db';
 
 const Home = async () => {
-  // Buscando os dados dos usuários usando o Prisma
   const users = await db.user.findMany();
 
-  // Mapeando os dados no formato esperado pela tabela
   const data = users.map((user) => ({
     id: user.id,
     name: user.name,
@@ -16,8 +12,6 @@ const Home = async () => {
     role: user.role,
     createdAt: user.createdAt
   }));
-
-  // Função para deletar um usuário
 
   return (
     <div className="container mx-auto">

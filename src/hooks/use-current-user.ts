@@ -1,11 +1,11 @@
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
 export const useCurrentUser = () => {
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return null; // Retornar nulo enquanto a sessão carrega
+  if (status === 'loading') {
+    return null;
   }
 
-  return session?.user || null; // Retornar o usuário ou null se não autenticado
+  return session?.user || null;
 };

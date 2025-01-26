@@ -43,24 +43,21 @@ export const generateAndSendEmailCode = async (
   userId: string,
   email: string
 ) => {
-  // Gera o código de 5 dígitos
   const code = Math.floor(10000 + Math.random() * 90000).toString();
 
   try {
-    // Salva o código no banco de dados
     await db.verificationCode.create({
       data: {
         userId,
         email,
         code,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000) // Expira em 10 minutos
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000)
       }
     });
   } catch (error) {
-    throw error; // Repropaga o erro
+    throw error;
   }
 
-  // Envia o e-mail com o código
   await sendVerificationEmailWithCode(email, code);
 };
 
@@ -69,7 +66,7 @@ export const validateEmailCode = async (userId: string, code: string) => {
     where: {
       userId,
       code,
-      expiresAt: { gte: new Date() } // Verifica validade
+      expiresAt: { gte: new Date() }
     }
   });
 
@@ -85,20 +82,17 @@ export const validateEmailCode = async (userId: string, code: string) => {
     return { error: 'Usuário não encontrado!' };
   }
 
-  // Atualiza o e-mail do usuário no banco de dados
   await db.user.update({
     where: { id: userId },
     data: { email: record.email }
   });
 
-  // Remove o código do banco
   await db.verificationCode.delete({ where: { id: record.id } });
 
   return { success: 'E-mail atualizado com sucesso!' };
 };
 
 export const resendEmailCode = async (userId: string, email: string) => {
-  // Opcional: Remover códigos antigos associados ao mesmo usuário e e-mail
   await db.verificationCode.deleteMany({
     where: {
       userId,
@@ -106,7 +100,6 @@ export const resendEmailCode = async (userId: string, email: string) => {
     }
   });
 
-  // Gerar e enviar um novo código
   return generateAndSendEmailCode(userId, email);
 };
 
@@ -122,13 +115,13 @@ export const startEmailUpdate = async (
 
   await generateAndSendEmailCode(userId, newEmail);
 
-  return {}; // Retorna um objeto vazio para evitar `undefined`
+  return {};
 };
 
 export const cleanExpiredCodes = async () => {
   const result = await db.verificationCode.deleteMany({
     where: {
-      expiresAt: { lt: new Date() } // Menor que o horário atual
+      expiresAt: { lt: new Date() }
     }
   });
 

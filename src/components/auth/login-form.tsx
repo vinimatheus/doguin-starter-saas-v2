@@ -73,13 +73,13 @@ export function LoginForm({
         if (data?.error) {
           form.reset();
           setError(data.error);
-          return; // Para evitar múltiplas atualizações
+          return;
         }
 
         if (data?.success) {
           form.reset();
           setSuccess(data.success);
-          return; // Redirecionamento ou próximo passo
+          return;
         }
 
         if (data?.twoFactor) {

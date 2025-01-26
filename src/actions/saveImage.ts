@@ -27,7 +27,6 @@ export const uploadImage = async (formData: FormData) => {
       }
     );
 
-    // Atualizar a URL da imagem no banco de dados
     const updatedUser = await db.user.update({
       where: { id: user.id },
       data: { image: result.secure_url }

@@ -58,13 +58,12 @@ export function RegisterForm({
       register(values).then((data) => {
         if (data?.error) {
           form.reset();
-          setError(data.error); // Mantém a mesma lógica
+          setError(data.error);
         }
 
         if (data?.success) {
-          // Corrigido para 'success'
           form.reset();
-          setSuccess(data.success); // Também corrigido
+          setSuccess(data.success);
         }
       });
     });

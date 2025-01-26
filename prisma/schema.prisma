@@ -39,7 +39,7 @@ model VerificationCode {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@index([userId, email]) // Opcional para consultas rápidas
+  @@index([userId, email])
 }
 
 model Account {
