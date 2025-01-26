@@ -8,7 +8,7 @@ const emailTemplate = (
   title: string,
   description: string,
   actionText: string,
-  link: string
+  link?: string
 ) => `
   <div style="
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -139,29 +139,6 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   });
 };
 
-export const sendInvitationEmail = async (email: string, password: string) => {
-  const loginLink = `${domain}/auth/login`;
-  const html = emailTemplate(
-    'Convite para Acesso ao Doguin Starter SaaS v2',
-    `
-    Você foi convidado para acessar o Doguin Starter SaaS v2. Aqui estão suas credenciais de acesso:
-    <br/><br/>
-    <strong>Email:</strong> ${email}<br/>
-    <strong>Senha:</strong> ${password}<br/><br/>
-    Clique no botão abaixo para fazer login.
-    `,
-    'Acessar Sistema',
-    loginLink
-  );
-
-  await resend.emails.send({
-    from: emailFrom,
-    to: email,
-    subject: 'Convite para Acesso - Doguin',
-    html
-  });
-};
-
 export const sendVerificationEmailWithCode = async (
   email: string,
   code: string
@@ -170,7 +147,6 @@ export const sendVerificationEmailWithCode = async (
     'Confirme seu e-mail',
     `Use o código abaixo para confirmar seu endereço de e-mail no Doguin Starter SaaS v2: <br/><br/> 
      <strong style="font-size: 24px;">${code}</strong>`,
-    'Confirmar E-mail',
     '#'
   );
 

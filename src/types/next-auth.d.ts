@@ -4,7 +4,6 @@ import { DefaultSession } from 'next-auth';
 export type ExtendedUser = DefaultSession['user'] & {
   role: UserRole;
   isTwoFactorEnabled: boolean;
-  stripeCustomerId: string;
   isOAuth: boolean;
 };
 

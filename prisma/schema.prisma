@@ -17,7 +17,7 @@ model User {
   name                    String?
   email                   String?                @unique
   emailVerified           DateTime?
-  stripeCustomerId        String?
+  subscriptionId          String?
   image                   String?
   password                String?
   role                    UserRole               @default(USER)
@@ -40,15 +40,6 @@ model VerificationCode {
   createdAt DateTime @default(now())
 
   @@index([userId, email]) // Opcional para consultas rápidas
-}
-
-model UserInvitation {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  role      UserRole @default(USER) // Enum para definir a função do usuário convidado
-  token     String   @unique // Token único para verificar o convite
-  expiresAt DateTime // Expiração do convite
-  createdAt DateTime @default(now())
 }
 
 model Account {

@@ -11,7 +11,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Configuração',
-    url: '',
+    url: '/dashboard/configuracao/perfil',
     icon: 'settings',
     isActive: false,
     shortcut: ['c', 'c'],
@@ -23,14 +23,6 @@ export const navItems: NavItem[] = [
         isActive: false,
         shortcut: ['p', 'p'],
         items: [] // Empty array as there are no child items for Perfil
-      },
-      {
-        title: 'Planos',
-        url: '/dashboard/configuracao/planos',
-        icon: 'Plane',
-        isActive: false,
-        shortcut: ['p', 'l'],
-        items: [] // Empty array as there are no child items for Planos
       }
     ]
   }

@@ -4,7 +4,6 @@ import { db } from '@/lib/db';
 import { getUserByEmail } from '@/data/user';
 import { getVerificationTokenByToken } from '@/data/verification-token';
 import { sendVerificationEmailWithCode } from '@/lib/mail';
-import { stripe } from '@/lib/stripe';
 
 export const newVerification = async (token: string) => {
   const existingToken = await getVerificationTokenByToken(token);
@@ -70,7 +69,7 @@ export const validateEmailCode = async (userId: string, code: string) => {
     where: {
       userId,
       code,
-      expiresAt: { gte: new Date() } // Verifica se o código ainda é válido
+      expiresAt: { gte: new Date() } // Verifica validade
     }
   });
 
@@ -78,7 +77,6 @@ export const validateEmailCode = async (userId: string, code: string) => {
     return { error: 'Código inválido ou expirado!' };
   }
 
-  // Busca o usuário no banco de dados
   const user = await db.user.findUnique({
     where: { id: userId }
   });
@@ -93,18 +91,7 @@ export const validateEmailCode = async (userId: string, code: string) => {
     data: { email: record.email }
   });
 
-  // Atualiza o e-mail no Stripe, se o usuário tiver um Stripe Customer ID
-  if (user.stripeCustomerId) {
-    try {
-      await stripe.customers.update(user.stripeCustomerId, {
-        email: record.email
-      });
-    } catch (error) {
-      return { error: 'Erro ao atualizar o e-mail no Stripe!' };
-    }
-  }
-
-  // Remove o código do banco de dados
+  // Remove o código do banco
   await db.verificationCode.delete({ where: { id: record.id } });
 
   return { success: 'E-mail atualizado com sucesso!' };

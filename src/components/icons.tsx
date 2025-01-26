@@ -33,7 +33,7 @@ import {
   UserX2Icon,
   X
 } from 'lucide-react';
-import { FaGoogle } from 'react-icons/fa';
+import { FaGoogle, FaRobot } from 'react-icons/fa';
 
 export type Icon = LucideIcon;
 
@@ -42,6 +42,7 @@ export const Icons = {
   logo: Command,
   login: LogIn,
   Dog,
+  Ia: FaRobot,
   Plane,
   close: X,
   product: LucideShoppingBag,
