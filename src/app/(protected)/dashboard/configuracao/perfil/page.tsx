@@ -4,13 +4,11 @@ import PageContainer from '@/components/layout/page-container';
 
 const SettingsPage = () => (
   <PageContainer>
-    <div className="flex h-screen">
-      <div className="flex-1 p-6">
-        <h1 className="mb-6 text-2xl font-semibold">Perfil</h1>
-        <SettingsForm />
-        <div className="mt-4">
-          <ChangePasswordDialog />
-        </div>
+    <div className="container mx-auto">
+      <h1 className="mb-4 text-2xl font-bold">Perfil</h1>
+      <SettingsForm />
+      <div className="mt-4">
+        <ChangePasswordDialog />
       </div>
     </div>
   </PageContainer>

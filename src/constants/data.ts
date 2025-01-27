@@ -23,6 +23,14 @@ export const navItems: NavItem[] = [
         isActive: false,
         shortcut: ['p', 'p'],
         items: []
+      },
+      {
+        title: 'Usuários',
+        url: '/dashboard/configuracao/usuarios',
+        icon: 'user',
+        isActive: false,
+        shortcut: ['p', 'p'],
+        items: []
       }
     ]
   }
