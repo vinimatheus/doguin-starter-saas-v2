@@ -26,22 +26,29 @@ import { navItems } from '@/constants/data';
 import { Icons } from '@/components/icons';
 import { ChevronRight } from 'lucide-react';
 import * as React from 'react';
+import { TeamSwitcher } from '../team-switcher';
 
-export default function AppSidebar() {
+export default function AppSidebar(
+  data: {
+    teams: {
+      name: string;
+      slug: string;
+    }[];
+  } = { teams: [] }
+) {
   const pathname = usePathname();
+
+  const [activeTeam] = React.useState(() => {
+    const slugFromPath = pathname.split('/')[2]; // Extrai o slug da URL
+    return (
+      data.teams.find((team) => team.slug === slugFromPath) || data.teams[0]
+    );
+  });
 
   return (
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
-        <div className="flex gap-2 py-2 text-sidebar-accent-foreground">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Icons.Dog className="size-7" />
-          </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">Doguin</span>
-            <span className="truncate text-xs">Saas Starter</span>
-          </div>
-        </div>
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
@@ -51,6 +58,13 @@ export default function AppSidebar() {
               const Icon = item.icon
                 ? Icons[item.icon as keyof typeof Icons]
                 : Icons.logo;
+              const org = item.org;
+              const itemUrl = org
+                ? `/dashboard/${activeTeam.slug}/${item.url}`
+                : `/dashboard/${item.url}`;
+
+              const isActive = pathname === itemUrl;
+
               return item?.items && item?.items?.length > 0 ? (
                 <Collapsible
                   key={item.title}
@@ -62,7 +76,7 @@ export default function AppSidebar() {
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
                         tooltip={item.title}
-                        isActive={pathname === item.url}
+                        isActive={isActive}
                       >
                         {item.icon && <Icon />}
                         <span>{item.title}</span>
@@ -71,18 +85,26 @@ export default function AppSidebar() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={pathname === subItem.url}
-                            >
-                              <Link href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
+                        {item.items?.map((subItem) => {
+                          const org = subItem.org;
+                          const subItemUrl = org
+                            ? `/dashboard/${activeTeam.slug}/${subItem.url}`
+                            : `/dashboard/${subItem.url}`;
+                          const isSubActive = pathname === subItemUrl;
+
+                          return (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isSubActive}
+                              >
+                                <Link href={subItemUrl}>
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })}
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>
@@ -92,9 +114,9 @@ export default function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    isActive={pathname === item.url}
+                    isActive={isActive}
                   >
-                    <Link href={item.url}>
+                    <Link href={itemUrl}>
                       <Icon />
                       <span>{item.title}</span>
                     </Link>

@@ -14,11 +14,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export function UserNav() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname(); // Obtém a URL atual
 
   if (status === 'loading') {
     return (
@@ -28,6 +29,10 @@ export function UserNav() {
 
   if (session) {
     const isAdmin = session.user?.role === 'ADMIN';
+
+    // 🔹 Extrai o slug da URL `/dashboard/[slug]/...`
+    const pathSegments = pathname.split('/');
+    const slug = pathSegments.length > 2 ? pathSegments[2] : '';
 
     return (
       <DropdownMenu>
@@ -64,17 +69,16 @@ export function UserNav() {
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="flex items-center justify-between gap-4"
-              onClick={() => router.push('/dashboard/configuracao/perfil')}
+              onClick={() => {
+                if (slug) {
+                  router.push(`/dashboard/${slug}/perfil`);
+                } else {
+                  router.push('/dashboard/perfil');
+                }
+              }}
             >
               Perfil
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center justify-between gap-4"
-              onClick={() => router.push('/dashboard/configuracao')}
-            >
-              Configurações
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator className="my-2" />

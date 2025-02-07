@@ -62,7 +62,7 @@ const ChangePasswordDialog = () => {
           <DialogTrigger asChild>
             <Button variant="outline">Trocar Senha</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Trocar Senha</DialogTitle>
             </DialogHeader>

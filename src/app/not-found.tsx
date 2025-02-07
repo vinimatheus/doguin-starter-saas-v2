@@ -24,7 +24,7 @@ export default function NotFound() {
           Voltar
         </Button>
         <Button
-          onClick={() => router.push('/dashboard/overview')}
+          onClick={() => router.push('/selecionarorg')}
           variant="ghost"
           size="lg"
         >

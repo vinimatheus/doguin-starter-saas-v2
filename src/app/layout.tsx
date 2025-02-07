@@ -5,6 +5,7 @@ import { Lato } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { SessionProvider } from 'next-auth/react';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: 'Next Shadcn',
@@ -24,14 +25,20 @@ export default async function RootLayout({
 }) {
   const session = await auth();
   return (
-    <SessionProvider session={session}>
-      <html lang="pt-BR" className={`${lato.className}`} suppressHydrationWarning>
-        <body className={'overflow-hidden'}>
-          <NextTopLoader showSpinner={false} />
-          <Toaster />
-          {children}
-        </body>
-      </html>
-    </SessionProvider>
+    <NuqsAdapter>
+      <SessionProvider session={session}>
+        <html
+          lang="pt-BR"
+          className={`${lato.className}`}
+          suppressHydrationWarning
+        >
+          <body className={'overflow-hidden'}>
+            <NextTopLoader showSpinner={false} />
+            <Toaster />
+            {children}
+          </body>
+        </html>
+      </SessionProvider>
+    </NuqsAdapter>
   );
 }

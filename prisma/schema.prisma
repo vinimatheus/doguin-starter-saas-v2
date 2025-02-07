@@ -28,6 +28,8 @@ model User {
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
   VerificationCode        VerificationCode[]
+  Organization            Organization[]
+  Member                  Member[]
 }
 
 model VerificationCode {
@@ -95,4 +97,52 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String?
+  ownerId     String // Relacionamento com o dono da organização
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members     Member[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Invite      Invite[]
+
+  @@index([slug])
+}
+
+model Member {
+  id             String       @id @default(uuid())
+  userId         String // Relacionamento com o usuário
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String // Relacionamento com a organização
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           MemberRole   @default(MEMBER) // Função dentro da organização
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, organizationId]) // Garante que um usuário só pode ser membro de uma organização uma vez
+}
+
+enum MemberRole {
+  OWNER // Dono da organização
+  ADMIN // Administrador da organização
+  MEMBER // Membro comum
+}
+
+model Invite {
+  id             String       @id @default(uuid())
+  email          String
+  role           MemberRole   @default(MEMBER)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  token          String       @unique
+
+  @@unique([email, organizationId]) // Garante que um email só pode ser convidado uma vez para a mesma organização
 }

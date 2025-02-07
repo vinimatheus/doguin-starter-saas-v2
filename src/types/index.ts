@@ -5,6 +5,7 @@ export interface NavItem {
   url: string;
   disabled?: boolean;
   external?: boolean;
+  org: boolean;
   shortcut?: [string, string];
   icon?: keyof typeof Icons;
   label?: string;
@@ -12,7 +13,6 @@ export interface NavItem {
   isActive?: boolean;
   items?: NavItem[];
 }
-
 
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
